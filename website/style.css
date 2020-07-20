@@ -1,89 +1,190 @@
-body{
-    background: #fffff8;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+* {
+    margin:0;
+    padding:0;
+
 }
+body{
+    /* background: #1f1a24; */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+
+/* page layout */
 
 #app{
     display: grid;
-    grid-auto-rows: minmax(150px, auto);
-    /* grid-template-columns:  */
-    height:100vh;
-    background: #f23557;
-    color: #f0d43a;
-    justify-content: center;
-    grid-gap: 1em;
-    font-size: 20px;
-    font-family: 'Oswald', sans-serif;
+    grid-auto-rows: minmax(100vh,auto);
 }
 
 .holder{
+   
+
+    /* border:1px solid #e4ff4d; */
+}
+
+.create-container {
+    display: flex;
+    align-items: center;
+    background: #1f1a24;
+    justify-content: center;
+}
+
+.create {
+    width:100%;
+    display: grid;
+    grid-auto-rows: auto;
+    grid-row-gap:2em;
+    margin: 2em;
+    box-sizing: border-box;
+}
+
+.entry-container{
+    box-sizing: border-box;
+    background: #3F3D56;
+    display:grid;
+    align-items: center;
 
 }
 
 .entry{
-    background: rgba(59, 74, 107, .4);
-}
-
-#entryHolder{
+    margin:5em 2em 2em 2em;
 
 }
 
-#date{
-
-}
-
-#temp{
-
-}
-
-#content{
-
-}
 
 .headline {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media only screen and (min-width:768px) {
+    .create,
+    .entry {
+        margin:2em 6em;
+    }
+    
+    .create {
+        grid-row-gap:4em;
+    }
+}
+
+@media only screen and (min-width:1100px) {
+    #app {
+        grid-auto-rows: 100vh;
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .create {
+        margin:2em 8em;
+    }
+    .entry {
+        margin:4em 8em 0 8em;
+    }
 
 }
-.title{
+
+
+/* Element Style */
+
+h1 {
+    line-height: 30px;
+    color:#bb86fc;
+    font-size: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 1em;
 
 }
 
-/*  Basic Styling To Override Default For Basic HTML Elements */
+h2{
+    font-size: 24px;
+    color:#bb86fc;
+    margin-bottom: 2em;
+    text-transform: uppercase;
+}
+
+
 label{
     display:block;
-    font-size: 27px;
+    font-size: 16px;
+    color:#fffff8;
+    text-transform: uppercase;
+    margin-bottom: 0.5em;
+    /* text-align: center; */
+
 }
+
+
+input,
+textarea {
+    font-family: inherit;
+    box-sizing: border-box;
+    padding:1em;
+    width:100%;
+    display:block;
+    background:#121212;
+    color: #fffff8;
+    font-size: 16px;
+    border: 1px solid #bb86fc;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+
+}
+
 
 input{
-    display:block;
     height: 60px;
-    width: 320px;
-    background:#22b2da;
-    color: #f0d43a;
-    font-size: 20px;
-    font-family: 'Oswald', sans-serif;
-    border: none;
+    
 }
+
+textarea {
+    /* height:20vh; */
+}
+
 
 button{
-    width: 400px;
-    height: 100px;
-    background: #3b4a6b;
-    color: #f0d43a;
-    font-size: 26px;
-    font-family: 'Oswald', sans-serif;
+    margin-top: 2em;
+    width:100%;
+    height: 52px;
+    background: #bb86fc;
+    color: #fffff8;
+    font-size: 16px;
     border: none;
-    box-shadow: 2px 4px 5px #444;
-}
-h1{
-    font-size: 36px;
+    text-transform: uppercase;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
 }
 
-textarea{
-    background:#22b2da;
-    color: #f0d43a;
-    font-size: 20px;
-    font-family: 'Oswald', sans-serif;
+
+.entry-container img{
+    width:100%;
+    display:flex;
+    justify-content: center;
 }
+
+.entry p {
+    color:#bcbcbc;
+}
+
+#date,
+#temp,
+#content{
+    color:#fffff8;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-top: 0.2em;
+    margin-bottom: 1.5em;
+
+}
+
+
 /* Reset style for HTML element on active to have no border*/
 input:focus,
 select:focus,
@@ -92,20 +193,53 @@ button:focus {
     outline: none;
 }
 /* Style for Placeholder Text*/
-::placeholder { /* Firefox, Chrome, Opera */ 
-    color: #f0d43a; 
-    font-family: 'Oswald', sans-serif;
 
-} 
-  
-:-ms-input-placeholder { /* Internet Explorer 10-11 */ 
-    color: #f0d43a; 
-    font-family: 'Oswald', sans-serif;
+::placeholder {
+    text-transform: uppercase;
+    color:#9385B4;
 
-} 
-  
-::-ms-input-placeholder { /* Microsoft Edge */ 
-    color: #f0d43a; 
-    font-family: 'Oswald', sans-serif;
+}
+/* for firefox 19+ */
+:-moz-placeholder {
+    text-transform: uppercase;
+    color:#9385B4;
 
-} 
+}
+
+/* for IE 10*/
+:-ms-input-placeholder {
+    text-transform: uppercase;
+    color:#9385B4;
+
+}
+
+/* for Opera */
+::-ms-input-placeholder {
+    text-transform: uppercase;
+    color:#9385B4;
+
+}
+
+
+/* for firefox 19 */
+::-moz-placeholder {
+    text-transform: uppercase;
+    color:#9385B4;
+
+}
+
+@media only screen and (min-width:768px){
+    .entry-container img{
+        width:60%;
+        margin:0 auto;
+    }
+    textarea {
+        height:400px;
+    }
+}
+
+@media only screen and (min-width:1100px){
+    .entry-container img{
+        width:50%;
+    }
+}
