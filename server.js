@@ -43,19 +43,18 @@ lserver.server.once("connection", () => {
     }, 100);
   });
 
+/* POST ROUTE */
 
+app.post('/save-data', addData);
 
+function addData (req,res){
+   const dataFromApp = req.body;
+    Object.assign(projectData,dataFromApp);
+    console.log(projectData);
+};
 
-// const data = []
+/* GET ROUTE */
 
-// app.post('/animal', addAnimal);
-
-// function addAnimal (req,res){
-//     data.push(req.body);
-//     console.log(data);
-//     res.send(data);
-// };
-
-// app.get("/test",function(req,res){
-//     res.send(data);
-// }) 
+app.get("/get-data",function(req,res){
+    res.send(projectData);
+}) 
