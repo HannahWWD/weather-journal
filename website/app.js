@@ -8,19 +8,27 @@ const formatter = new Intl.DateTimeFormat('en-US',{weekday: 'long', year: 'numer
 let newDate = formatter.format(d)
 
 const apiKey = "5f9c08863894fa8044770058cdc6572d";
-const countrycode = "us";
-const tempUnit = "metric"; // metric or imperial
+const countrycode = "US";
+const tempUnit = "imperial"; // metric or imperial
+
+let inputZip = document.getElementById("zip");
+let inputFeeling = document.getElementById("feelings");
+
+const zipInputErrorMsg = document.getElementById("error")
 
 
-const getOpenWeatherData = async (zipcode) => {
+const getOpenWeatherData = async (zipcode,countrycode,apiKey,tempUnit) => {
     const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zipcode},${countrycode.toLowerCase()}&appid=${apiKey}&units=${tempUnit}`
     const request = await fetch(url);
     try {
+        // note: in some cases the fetch is failed, it is still considered as resloved, 
+        //but returns the data object with error msg
         const data = await request.json();
         console.log(data)
         return data
     } catch (error) {
         console.log("error: ", error);
+
     }
 }
 
@@ -54,9 +62,18 @@ const updateUI = async (url) => {
         const todayEntry = document.getElementById("date");
         const tempEntry = document.getElementById("temp");
         const contentEntry = document.getElementById("content");
-        todayEntry.textContent = serverReturnData.currentDate;
-        tempEntry.textContent = serverReturnData.currentTemp;
-        contentEntry.textContent = serverReturnData.userInput;
+
+        // hide previous error message (if any)
+        inputZip.classList.remove("input-error");
+        zipInputErrorMsg.style.visibility = "hidden";
+
+        todayEntry.innerHTML = serverReturnData.currentDate;
+        tempEntry.innerHTML = serverReturnData.currentTemp;
+        contentEntry.innerHTML = serverReturnData.userInput;
+
+        // reset form
+        inputZip.value = "";
+        inputFeeling.value = "";
 
     } catch (error) {
         console.log("error: ", error);
@@ -66,19 +83,36 @@ const updateUI = async (url) => {
 
 performAction = (e) => {
     e.preventDefault();
-    const inputZip = document.getElementById("zip").value
-    const inputFeeling = document.getElementById("feelings").value
-    getOpenWeatherData(inputZip).then((data) => {
-        const sendToServerData = {
-            currentDate: newDate,
-            currentTemp: data.main.temp,
-            userInput: inputFeeling
-        }
-        postData('/save-data', sendToServerData)
-    }).then(() => { updateUI('/get-data') })
-    /* .then() need to pass a function instead of function call (such as updateUI()),
-     otherwise this function will fire first */
+    // if user enter a number in zipcode
+    if (!isNaN(inputZip.value) && inputZip.value != "") {
+        getOpenWeatherData(inputZip.value,countrycode,apiKey,tempUnit).then((data) => {
+            //if the fetch is susscessful (zipcode is recognized in selected country)
+            if (data.cod == 200) {
+                console.log(data)
+                //the data that would be passed to the server
+                const sendToServerData = {
+                    currentDate: newDate,
+                    currentTemp: `${data.main.temp.toFixed()} \xB0F`,
+                    userInput: inputFeeling.value
+                }
+                postData('/save-data', sendToServerData)
+            } else {
+                // if the fetch is failed because some reasons, then abort the chain
+                console.log('aborting!');
+                inputZip.classList.add("input-error");
+                zipInputErrorMsg.style.visibility = "visible";
+                // abort chain
+                throw new Error('abort promise chain');
+                //below if add .catch(console.log), the chain won't break
+            }}).then(() => { updateUI('/get-data') })
+        /* .then() need to pass a function instead of function call (such as updateUI()),
+    otherwise this function will fire first */
+    } else {
+        inputZip.classList.add("input-error");
+        zipInputErrorMsg.style.visibility = "visible";
 
+    }
+   
 
 }
 

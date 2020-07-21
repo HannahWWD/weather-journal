@@ -43,18 +43,25 @@ lserver.server.once("connection", () => {
     }, 100);
   });
 
+/* GET ROUTE */
+
+app.get("/get-data",function(req,res){
+  res.send(projectData);
+}) 
+
 /* POST ROUTE */
 
 app.post('/save-data', addData);
 
 function addData (req,res){
    const dataFromApp = req.body;
-    Object.assign(projectData,dataFromApp);
+   const newEntry = {
+     currentDate:dataFromApp.currentDate,
+     currentTemp:dataFromApp.currentTemp,
+     userInput:dataFromApp.userInput
+   }
+    Object.assign(projectData,newEntry);
     console.log(projectData);
 };
 
-/* GET ROUTE */
 
-app.get("/get-data",function(req,res){
-    res.send(projectData);
-}) 
