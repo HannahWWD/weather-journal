@@ -4,20 +4,23 @@
 
 // Create a new date instance dynamically with JS
 let d = new Date();
-const formatter = new Intl.DateTimeFormat('en-US',{weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+// format date
+const formatter = new Intl.DateTimeFormat('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 let newDate = formatter.format(d)
 
+// necessary settings to fetch data from OpenWeather api
 const apiKey = "5f9c08863894fa8044770058cdc6572d";
 const countrycode = "US";
 const tempUnit = "imperial"; // metric or imperial
 
-let inputZip = document.getElementById("zip");
-let inputFeeling = document.getElementById("feelings");
-
+// input elements
+const inputZip = document.getElementById("zip");
+const inputFeeling = document.getElementById("feelings");
+// error message if user input something not valid
 const zipInputErrorMsg = document.getElementById("error")
 
-
-const getOpenWeatherData = async (zipcode,countrycode,apiKey,tempUnit) => {
+// fetch data from OpenWeather Api
+const getOpenWeatherData = async (zipcode, countrycode, apiKey, tempUnit) => {
     const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zipcode},${countrycode.toLowerCase()}&appid=${apiKey}&units=${tempUnit}`
     const request = await fetch(url);
     try {
@@ -32,6 +35,7 @@ const getOpenWeatherData = async (zipcode,countrycode,apiKey,tempUnit) => {
     }
 }
 
+// post data to local server
 const postData = async (url = '', data = {}) => {
     console.log(data)
     const response = await fetch(url, {
@@ -53,12 +57,16 @@ const postData = async (url = '', data = {}) => {
     }
 }
 
+// update Ui
 const updateUI = async (url) => {
+    // get data from local server
     const request = await fetch(url);
 
     try {
         const serverReturnData = await request.json();
         console.log(serverReturnData)
+
+        // elements that pending to update
         const todayEntry = document.getElementById("date");
         const tempEntry = document.getElementById("temp");
         const contentEntry = document.getElementById("content");
@@ -67,6 +75,7 @@ const updateUI = async (url) => {
         inputZip.classList.remove("input-error");
         zipInputErrorMsg.style.visibility = "hidden";
 
+        // update elements
         todayEntry.innerHTML = serverReturnData.currentDate;
         tempEntry.innerHTML = serverReturnData.currentTemp;
         contentEntry.innerHTML = serverReturnData.userInput;
@@ -83,9 +92,9 @@ const updateUI = async (url) => {
 
 performAction = (e) => {
     e.preventDefault();
-    // if user enter a number in zipcode
+    // if user enter a (valid or not valid) number in zipcode
     if (!isNaN(inputZip.value) && inputZip.value != "") {
-        getOpenWeatherData(inputZip.value,countrycode,apiKey,tempUnit).then((data) => {
+        getOpenWeatherData(inputZip.value, countrycode, apiKey, tempUnit).then((data) => {
             //if the fetch is susscessful (zipcode is recognized in selected country)
             if (data.cod == 200) {
                 console.log(data)
@@ -104,15 +113,17 @@ performAction = (e) => {
                 // abort chain
                 throw new Error('abort promise chain');
                 //below if add .catch(console.log), the chain won't break
-            }}).then(() => { updateUI('/get-data') })
+            }
+        }).then(() => { updateUI('/get-data') })
         /* .then() need to pass a function instead of function call (such as updateUI()),
     otherwise this function will fire first */
     } else {
+        // if the zipcode is not valid, display error message
         inputZip.classList.add("input-error");
         zipInputErrorMsg.style.visibility = "visible";
 
     }
-   
+
 
 }
 
